@@ -26,7 +26,7 @@ export default function Navbar() {
                 type="button"
                 onClick={() => router.push(href)}
                 aria-current={isActive ? "page" : undefined}
-                className="relative flex items-center gap-2 rounded-full px-6 py-3"
+                className="relative cursor-pointer flex items-center gap-2 rounded-full px-6 py-3"
               >
                 {isActive && (
                   <motion.span

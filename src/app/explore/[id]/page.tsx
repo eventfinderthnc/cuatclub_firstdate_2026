@@ -1,13 +1,18 @@
+import { notFound } from "next/navigation";
+import { getClubById } from "@/lib/clubs";
+import ClubDetail from "@/components/ClubDetail";
+
 type ClubPageProps = {
   params: Promise<{ id: string }>;
 };
 
 export default async function ClubPage({ params }: ClubPageProps) {
   const { id } = await params;
+  const club = getClubById(Number(id));
 
-  return (
-    <div className="w-full px-4 pt-4">
-      <h1 className="text-xl font-bold text-foreground">Club: {id}</h1>
-    </div>
-  );
+  if (!club) {
+    notFound();
+  }
+
+  return <ClubDetail club={club} />;
 }

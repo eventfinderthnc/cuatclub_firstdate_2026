@@ -3,6 +3,7 @@ import { Inter, Noto_Sans_Thai } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Header from "@/components/Header";
+import ScrollToTop from "@/components/ScrollToTop";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -30,6 +31,7 @@ export default function RootLayout({
       className={`${inter.variable} ${notoSansThai.variable} h-full antialiased`}
     >
       <body className="flex flex-col items-center min-h-full">
+        <ScrollToTop />
         <div className="w-full max-w-[768px] flex flex-col items-center">
         <Header />
         {children}

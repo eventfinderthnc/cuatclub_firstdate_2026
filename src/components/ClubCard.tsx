@@ -33,7 +33,7 @@ export default function ClubCard({
       onKeyDown={(e) => {
         if (e.key === "Enter") router.push(`/explore/${id}`);
       }}
-      className="w-full cursor-pointer rounded-2xl border border-border bg-background p-5 shadow-[0_0_30px_var(--color-shadow-black)] transition-colors hover:border-primary/40 md:shadow-none"
+      className="w-full cursor-pointer rounded-2xl border border-border bg-background p-5 shadow-[0_0_14px_var(--color-shadow-black)] transition-colors hover:border-primary/40 md:shadow-none"
     >
       <div className="flex items-start justify-between">
         <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-primary/30">
