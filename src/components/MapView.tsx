@@ -107,8 +107,9 @@ export default function MapView() {
   const baseScaleRef = useRef(1);
 
   const pointers = useRef(new Map<number, { x: number; y: number }>());
-  const dragState = useRef<{ x: number; y: number; moved: boolean } | null>(null);
+  const dragState = useRef<{ startX: number; startY: number; lastFlushX: number; lastFlushY: number; moved: boolean } | null>(null);
   const pinchState = useRef<{ distance: number; scale: number } | null>(null);
+  const rafHandle = useRef<number | null>(null);
 
   const fitToViewport = useCallback(() => {
     const el = viewportRef.current;
@@ -174,7 +175,13 @@ export default function MapView() {
     pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
 
     if (pointers.current.size === 1) {
-      dragState.current = { x: e.clientX, y: e.clientY, moved: false };
+      dragState.current = {
+        startX: e.clientX,
+        startY: e.clientY,
+        lastFlushX: e.clientX,
+        lastFlushY: e.clientY,
+        moved: false,
+      };
     } else if (pointers.current.size === 2) {
       const pts = Array.from(pointers.current.values());
       const distance = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
@@ -183,56 +190,86 @@ export default function MapView() {
     }
   }, [transform.scale]);
 
+  // Runs at most once per animation frame regardless of how many raw touch
+  // samples fire in between — on iOS those can arrive fast enough to
+  // overwhelm the main thread with a full re-render each time, which can
+  // crash the tab ("This page couldn't load") during pinch/pan.
+  const flushPointerMove = useCallback(() => {
+    rafHandle.current = null;
+    const el = viewportRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+
+    if (pointers.current.size === 2 && pinchState.current) {
+      const pts = Array.from(pointers.current.values());
+      const distance = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+      const midX = (pts[0].x + pts[1].x) / 2;
+      const midY = (pts[0].y + pts[1].y) / 2;
+      const factor = distance / pinchState.current.distance;
+
+      setTransform((prev) => {
+        const nextScale = Math.min(
+          MAX_ZOOM,
+          Math.max(baseScaleRef.current, pinchState.current!.scale * factor),
+        );
+        const px = midX - rect.left;
+        const py = midY - rect.top;
+        const ratio = nextScale / prev.scale;
+        const x = px - (px - prev.x) * ratio;
+        const y = py - (py - prev.y) * ratio;
+        return clampTransform({ scale: nextScale, x, y }, rect.width, rect.height);
+      });
+      return;
+    }
+
+    if (pointers.current.size === 1 && dragState.current) {
+      const [pt] = Array.from(pointers.current.values());
+      const dx = pt.x - dragState.current.lastFlushX;
+      const dy = pt.y - dragState.current.lastFlushY;
+      dragState.current.lastFlushX = pt.x;
+      dragState.current.lastFlushY = pt.y;
+      if (dx === 0 && dy === 0) return;
+
+      setTransform((prev) =>
+        clampTransform({ ...prev, x: prev.x + dx, y: prev.y + dy }, rect.width, rect.height),
+      );
+    }
+  }, []);
+
   const onPointerMove = useCallback(
     (e: React.PointerEvent) => {
       if (!pointers.current.has(e.pointerId)) return;
       pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
 
-      const el = viewportRef.current;
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
-
-      if (pointers.current.size === 2 && pinchState.current) {
-        const pts = Array.from(pointers.current.values());
-        const distance = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
-        const midX = (pts[0].x + pts[1].x) / 2;
-        const midY = (pts[0].y + pts[1].y) / 2;
-        const factor = distance / pinchState.current.distance;
-
-        setTransform((prev) => {
-          const nextScale = Math.min(
-            MAX_ZOOM,
-            Math.max(baseScaleRef.current, pinchState.current!.scale * factor),
-          );
-          const px = midX - rect.left;
-          const py = midY - rect.top;
-          const ratio = nextScale / prev.scale;
-          const x = px - (px - prev.x) * ratio;
-          const y = py - (py - prev.y) * ratio;
-          return clampTransform({ scale: nextScale, x, y }, rect.width, rect.height);
-        });
-        return;
+      if (dragState.current && !dragState.current.moved) {
+        const dx = e.clientX - dragState.current.startX;
+        const dy = e.clientY - dragState.current.startY;
+        if (Math.abs(dx) > 3 || Math.abs(dy) > 3) dragState.current.moved = true;
       }
 
-      if (dragState.current) {
-        const dx = e.clientX - dragState.current.x;
-        const dy = e.clientY - dragState.current.y;
-        if (Math.abs(dx) > 3 || Math.abs(dy) > 3) dragState.current.moved = true;
-        dragState.current.x = e.clientX;
-        dragState.current.y = e.clientY;
-
-        setTransform((prev) =>
-          clampTransform({ ...prev, x: prev.x + dx, y: prev.y + dy }, rect.width, rect.height),
-        );
+      if (rafHandle.current == null) {
+        rafHandle.current = requestAnimationFrame(flushPointerMove);
       }
     },
-    [],
+    [flushPointerMove],
   );
 
   const endPointer = useCallback((e: React.PointerEvent) => {
     pointers.current.delete(e.pointerId);
     if (pointers.current.size < 2) pinchState.current = null;
-    if (pointers.current.size === 0) dragState.current = null;
+    if (pointers.current.size === 0) {
+      dragState.current = null;
+      if (rafHandle.current != null) {
+        cancelAnimationFrame(rafHandle.current);
+        rafHandle.current = null;
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (rafHandle.current != null) cancelAnimationFrame(rafHandle.current);
+    };
   }, []);
 
   const handlePinClick = (pin: MapPin, e: React.MouseEvent) => {
