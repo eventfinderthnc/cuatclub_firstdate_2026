@@ -147,13 +147,22 @@ export default function MapView() {
   }, []);
 
   const onWheel = useCallback(
-    (e: React.WheelEvent) => {
+    (e: WheelEvent) => {
       e.preventDefault();
       const factor = Math.exp(-e.deltaY * 0.0015);
       zoomAt(e.clientX, e.clientY, factor);
     },
     [zoomAt],
   );
+
+  useEffect(() => {
+    const el = viewportRef.current;
+    if (!el) return;
+    // React's synthetic onWheel listener is passive, so preventDefault() there
+    // is silently ignored; a native listener is required to stop page zoom/scroll.
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [onWheel]);
 
   const onPointerDown = useCallback((e: React.PointerEvent) => {
     (e.target as Element).setPointerCapture(e.pointerId);
@@ -240,7 +249,6 @@ export default function MapView() {
     <div className="relative w-full" style={{ height: "calc(100dvh - 64px)" }}>
       <div
         ref={viewportRef}
-        onWheel={onWheel}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={endPointer}
