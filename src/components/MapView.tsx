@@ -1,0 +1,383 @@
+"use client";
+
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import {
+  Building,
+  Car,
+  ClipboardList,
+  GraduationCap,
+  Hammer,
+  HeartPulse,
+  Landmark,
+  Store,
+  Users,
+  Wrench,
+  X,
+  type LucideIcon,
+} from "lucide-react";
+import { MAP_PINS, type MapPin, type MapPinType } from "@/lib/mapPins";
+
+const MAP_WIDTH = 1543;
+const MAP_HEIGHT = 1019;
+// The source map image is landscape; it's rotated 90deg counter-clockwise so
+// it fills a portrait phone screen. The stage below uses the swapped (portrait) size.
+const STAGE_WIDTH = MAP_HEIGHT;
+const STAGE_HEIGHT = MAP_WIDTH;
+const MIN_ZOOM = 1;
+const MAX_ZOOM = 4;
+// How far past the fit-to-screen scale the user must zoom in before a zone
+// pin (ชมรม / องค์กร / อาคารคณะ) splits into one pin per booth.
+const SUB_PIN_REVEAL_RATIO = 2.2;
+
+function rotatePinPercent(pin: { x: number; y: number }) {
+  return { x: pin.y, y: 100 - pin.x };
+}
+
+const PIN_STYLE: Record<MapPinType, { icon: LucideIcon; className: string }> = {
+  faculty: { icon: GraduationCap, className: "bg-[#4C6B3C] text-white" },
+  club: { icon: Users, className: "bg-primary text-white" },
+  shop: { icon: Store, className: "bg-[#D9A441] text-white" },
+  facility: { icon: Wrench, className: "bg-[#5A6B8C] text-white" },
+  landmark: { icon: Landmark, className: "bg-[#8C4C6B] text-white" },
+  service: { icon: HeartPulse, className: "bg-[#C24A4A] text-white" },
+  parking: { icon: Car, className: "bg-[#5A6B8C] text-white" },
+  registration: { icon: ClipboardList, className: "bg-[#2F7A8C] text-white" },
+  workshop: { icon: Hammer, className: "bg-[#C1652E] text-white" },
+  organization: { icon: Users, className: "bg-[#5B4B9E] text-white" },
+  building: { icon: Building, className: "bg-[#6B7280] text-white" },
+};
+
+const PIN_TYPE_LABEL: Record<MapPinType, string> = {
+  faculty: "คณะ",
+  club: "ชมรม",
+  shop: "ร้านค้า",
+  facility: "สิ่งอำนวยความสะดวก",
+  landmark: "สถานที่สำคัญ",
+  service: "จุดบริการ",
+  parking: "ที่จอดรถ",
+  registration: "จุดลงทะเบียน",
+  workshop: "เวิร์กช็อป",
+  organization: "องค์กร",
+  building: "อาคาร",
+};
+
+type Transform = { scale: number; x: number; y: number };
+
+function clampTransform(t: Transform, viewportW: number, viewportH: number): Transform {
+  const scale = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM * fitScale(viewportW, viewportH), t.scale));
+  const contentW = STAGE_WIDTH * scale;
+  const contentH = STAGE_HEIGHT * scale;
+
+  let x = t.x;
+  let y = t.y;
+
+  if (contentW <= viewportW) {
+    x = (viewportW - contentW) / 2;
+  } else {
+    x = Math.min(0, Math.max(viewportW - contentW, x));
+  }
+
+  if (contentH <= viewportH) {
+    y = (viewportH - contentH) / 2;
+  } else {
+    y = Math.min(0, Math.max(viewportH - contentH, y));
+  }
+
+  return { scale, x, y };
+}
+
+function fitScale(viewportW: number, viewportH: number): number {
+  return Math.min(viewportW / STAGE_WIDTH, viewportH / STAGE_HEIGHT);
+}
+
+export default function MapView() {
+  const router = useRouter();
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const [transform, setTransform] = useState<Transform>({ scale: 1, x: 0, y: 0 });
+  const [selectedPin, setSelectedPin] = useState<MapPin | null>(null);
+  const [sheetVisible, setSheetVisible] = useState(false);
+  const [baseScale, setBaseScale] = useState(1);
+  const baseScaleRef = useRef(1);
+
+  const pointers = useRef(new Map<number, { x: number; y: number }>());
+  const dragState = useRef<{ x: number; y: number; moved: boolean } | null>(null);
+  const pinchState = useRef<{ distance: number; scale: number } | null>(null);
+
+  const fitToViewport = useCallback(() => {
+    const el = viewportRef.current;
+    if (!el) return;
+    const { width, height } = el.getBoundingClientRect();
+    const scale = fitScale(width, height);
+    baseScaleRef.current = scale;
+    setBaseScale(scale);
+    setTransform(
+      clampTransform(
+        { scale, x: (width - STAGE_WIDTH * scale) / 2, y: 0 },
+        width,
+        height,
+      ),
+    );
+  }, []);
+
+  useEffect(() => {
+    fitToViewport();
+    const el = viewportRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver(fitToViewport);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [fitToViewport]);
+
+  const zoomAt = useCallback((clientX: number, clientY: number, factor: number) => {
+    const el = viewportRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const px = clientX - rect.left;
+    const py = clientY - rect.top;
+
+    setTransform((prev) => {
+      const nextScale = Math.min(MAX_ZOOM, Math.max(baseScaleRef.current, prev.scale * factor));
+      const ratio = nextScale / prev.scale;
+      const x = px - (px - prev.x) * ratio;
+      const y = py - (py - prev.y) * ratio;
+      return clampTransform({ scale: nextScale, x, y }, rect.width, rect.height);
+    });
+  }, []);
+
+  const onWheel = useCallback(
+    (e: React.WheelEvent) => {
+      e.preventDefault();
+      const factor = Math.exp(-e.deltaY * 0.0015);
+      zoomAt(e.clientX, e.clientY, factor);
+    },
+    [zoomAt],
+  );
+
+  const onPointerDown = useCallback((e: React.PointerEvent) => {
+    (e.target as Element).setPointerCapture(e.pointerId);
+    pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+    if (pointers.current.size === 1) {
+      dragState.current = { x: e.clientX, y: e.clientY, moved: false };
+    } else if (pointers.current.size === 2) {
+      const pts = Array.from(pointers.current.values());
+      const distance = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+      pinchState.current = { distance, scale: transform.scale };
+      dragState.current = null;
+    }
+  }, [transform.scale]);
+
+  const onPointerMove = useCallback(
+    (e: React.PointerEvent) => {
+      if (!pointers.current.has(e.pointerId)) return;
+      pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+      const el = viewportRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+
+      if (pointers.current.size === 2 && pinchState.current) {
+        const pts = Array.from(pointers.current.values());
+        const distance = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+        const midX = (pts[0].x + pts[1].x) / 2;
+        const midY = (pts[0].y + pts[1].y) / 2;
+        const factor = distance / pinchState.current.distance;
+
+        setTransform((prev) => {
+          const nextScale = Math.min(
+            MAX_ZOOM,
+            Math.max(baseScaleRef.current, pinchState.current!.scale * factor),
+          );
+          const px = midX - rect.left;
+          const py = midY - rect.top;
+          const ratio = nextScale / prev.scale;
+          const x = px - (px - prev.x) * ratio;
+          const y = py - (py - prev.y) * ratio;
+          return clampTransform({ scale: nextScale, x, y }, rect.width, rect.height);
+        });
+        return;
+      }
+
+      if (dragState.current) {
+        const dx = e.clientX - dragState.current.x;
+        const dy = e.clientY - dragState.current.y;
+        if (Math.abs(dx) > 3 || Math.abs(dy) > 3) dragState.current.moved = true;
+        dragState.current.x = e.clientX;
+        dragState.current.y = e.clientY;
+
+        setTransform((prev) =>
+          clampTransform({ ...prev, x: prev.x + dx, y: prev.y + dy }, rect.width, rect.height),
+        );
+      }
+    },
+    [],
+  );
+
+  const endPointer = useCallback((e: React.PointerEvent) => {
+    pointers.current.delete(e.pointerId);
+    if (pointers.current.size < 2) pinchState.current = null;
+    if (pointers.current.size === 0) dragState.current = null;
+  }, []);
+
+  const handlePinClick = (pin: MapPin, e: React.MouseEvent) => {
+    if (dragState.current?.moved) return;
+    e.stopPropagation();
+    setSelectedPin(pin);
+    requestAnimationFrame(() => setSheetVisible(true));
+  };
+
+  const closeSheet = () => {
+    setSheetVisible(false);
+    setTimeout(() => setSelectedPin(null), 200);
+  };
+
+  const pinStyle = selectedPin ? PIN_STYLE[selectedPin.type] : null;
+  const PinIcon = pinStyle?.icon;
+
+  return (
+    <div className="relative w-full" style={{ height: "calc(100dvh - 64px)" }}>
+      <div
+        ref={viewportRef}
+        onWheel={onWheel}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={endPointer}
+        onPointerCancel={endPointer}
+        onPointerLeave={endPointer}
+        className="relative h-full w-full touch-none overflow-hidden bg-[#E7E7E7]"
+      >
+        <div
+          className="absolute top-0 left-0 origin-top-left"
+          style={{
+            width: STAGE_WIDTH,
+            height: STAGE_HEIGHT,
+            transform: `translate3d(${transform.x}px, ${transform.y}px, 0) scale(${transform.scale})`,
+          }}
+        >
+          <div
+            className="absolute top-0 left-0"
+            style={{
+              width: MAP_WIDTH,
+              height: MAP_HEIGHT,
+              transformOrigin: "0 0",
+              transform: `matrix(0, -1, 1, 0, 0, ${MAP_WIDTH})`,
+            }}
+          >
+            <Image
+              src="/firstdate_map.png"
+              alt="แผนที่งาน"
+              width={MAP_WIDTH}
+              height={MAP_HEIGHT}
+              priority
+              draggable={false}
+              className="pointer-events-none block w-full h-full select-none"
+            />
+          </div>
+
+          {MAP_PINS.flatMap((pin) => {
+            const style = PIN_STYLE[pin.type];
+            const Icon = style.icon;
+            const showSubPins =
+              !!pin.subPins && transform.scale / baseScale >= SUB_PIN_REVEAL_RATIO;
+            const subTargets = pin.subPins
+              ? pin.subPins.map((sub, index) => ({
+                  key: `${pin.id}-${index}`,
+                  pin: { ...pin, x: sub.x, y: sub.y },
+                  visible: showSubPins,
+                }))
+              : [];
+            const targets = subTargets.concat([
+              { key: `${pin.id}`, pin, visible: !pin.subPins || !showSubPins },
+            ]);
+
+            return targets.map(({ key, pin: target, visible }) => {
+              const { x, y } = rotatePinPercent(target);
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={(e) => handlePinClick(target, e)}
+                  tabIndex={visible ? 0 : -1}
+                  aria-hidden={!visible}
+                  className={`absolute -translate-x-1/2 -translate-y-full transition-opacity duration-200 ${
+                    visible ? "cursor-pointer opacity-100" : "pointer-events-none opacity-0"
+                  }`}
+                  style={{ left: `${x}%`, top: `${y}%` }}
+                >
+                  <span
+                    className="block origin-bottom drop-shadow-[0_2px_4px_rgba(0,0,0,0.35)]"
+                    style={{ transform: `scale(${1 / transform.scale})` }}
+                  >
+                    <span
+                      className={`flex h-9 w-9 items-center justify-center rounded-full border-2 border-white ${style.className}`}
+                    >
+                      <Icon size={18} strokeWidth={2.25} />
+                    </span>
+                  </span>
+                </button>
+              );
+            });
+          })}
+        </div>
+      </div>
+
+      {selectedPin && pinStyle && PinIcon && (
+        <div
+          onClick={closeSheet}
+          className={`fixed inset-0 z-60 flex items-end bg-black/40 transition-opacity duration-200 ${
+            sheetVisible ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className={`w-full max-w-[768px] rounded-t-3xl bg-background p-6 pb-16 shadow-[0_0_32px_var(--color-shadow-black)] transition-transform duration-200 mx-auto ${
+              sheetVisible ? "translate-y-0" : "translate-y-full"
+            }`}
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <span
+                  className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${pinStyle.className}`}
+                >
+                  <PinIcon size={20} />
+                </span>
+                <div>
+                  <p className="text-xs font-medium text-stone">
+                    {PIN_TYPE_LABEL[selectedPin.type]}
+                  </p>
+                  <h2 className="font-heading text-lg font-semibold text-foreground">
+                    {selectedPin.name}
+                  </h2>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={closeSheet}
+                aria-label="ปิด"
+                className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full bg-surface text-foreground"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <p className="mt-4 leading-relaxed text-charcoal">
+              {selectedPin.description}
+            </p>
+
+            {selectedPin.link && (
+              <button
+                type="button"
+                onClick={() => router.push(selectedPin.link!)}
+                className="mt-5 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-medium text-white"
+              >
+                ดูชมรมทั้งหมด
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
