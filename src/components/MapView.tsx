@@ -332,7 +332,7 @@ export default function MapView() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className={`w-full max-w-[768px] rounded-t-3xl bg-background p-6 pb-16 shadow-[0_0_32px_var(--color-shadow-black)] transition-transform duration-200 mx-auto ${
+            className={`w-full max-w-[768px] rounded-t-3xl bg-background p-6 pb-6 shadow-[0_0_32px_var(--color-shadow-black)] transition-transform duration-200 mx-auto ${
               sheetVisible ? "translate-y-0" : "translate-y-full"
             }`}
           >
