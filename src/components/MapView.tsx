@@ -27,6 +27,9 @@ const STAGE_WIDTH = MAP_HEIGHT;
 const STAGE_HEIGHT = MAP_WIDTH;
 const MIN_ZOOM = 1;
 const MAX_ZOOM = 4;
+// Even when the map exactly fits the viewport on an axis, allow this many
+// px of play around the resting position so it's clear the map can be panned.
+const PAN_SLACK = 28;
 // How far past the fit-to-screen scale the user must zoom in before a zone
 // pin (ชมรม / องค์กร / อาคารคณะ) splits into one pin per booth.
 const SUB_PIN_REVEAL_RATIO = 2.2;
@@ -74,13 +77,15 @@ function clampTransform(t: Transform, viewportW: number, viewportH: number): Tra
   let y = t.y;
 
   if (contentW <= viewportW) {
-    x = (viewportW - contentW) / 2;
+    const center = (viewportW - contentW) / 2;
+    x = Math.min(center + PAN_SLACK, Math.max(center - PAN_SLACK, x));
   } else {
     x = Math.min(0, Math.max(viewportW - contentW, x));
   }
 
   if (contentH <= viewportH) {
-    y = (viewportH - contentH) / 2;
+    const center = (viewportH - contentH) / 2;
+    y = Math.min(center + PAN_SLACK, Math.max(center - PAN_SLACK, y));
   } else {
     y = Math.min(0, Math.max(viewportH - contentH, y));
   }
