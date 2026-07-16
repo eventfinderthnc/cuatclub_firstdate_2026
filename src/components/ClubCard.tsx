@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ArrowRight, MapPin, Users } from "lucide-react";
 import { getCategory } from "@/lib/categories";
+import { useLanguage } from "@/lib/i18n";
+import { getCategoryLabel } from "@/lib/translations";
 
 type ClubCardProps = {
   id: number;
@@ -23,6 +25,7 @@ export default function ClubCard({
   logoSrc,
 }: ClubCardProps) {
   const router = useRouter();
+  const { language } = useLanguage();
   const { textColor, bgSoft } = getCategory(category);
 
   return (
@@ -50,7 +53,7 @@ export default function ClubCard({
           )}
         </div>
         <span className={`rounded-full px-4 py-1.5 text-sm font-medium ${bgSoft} ${textColor}`}>
-          {category}
+          {getCategoryLabel(category, language)}
         </span>
       </div>
 

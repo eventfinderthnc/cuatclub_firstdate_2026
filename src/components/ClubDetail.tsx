@@ -9,6 +9,8 @@ import { getCategory } from "@/lib/categories";
 import InstagramIcon from "@/components/icon/InstagramIcon";
 import FacebookIcon from "@/components/icon/FacebookIcon";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "@/lib/i18n";
+import { getCategoryLabel } from "@/lib/translations";
 
 type ClubDetailProps = {
   club: Club;
@@ -16,6 +18,7 @@ type ClubDetailProps = {
 
 export default function ClubDetail({ club }: ClubDetailProps) {
   const router = useRouter();
+  const { language } = useLanguage();
   const { textColor, bgSoft } = getCategory(club.category);
   const gallery = club.coverImages ?? [];
   const [renderedImage, setRenderedImage] = useState<string | null>(null);
@@ -73,7 +76,7 @@ export default function ClubDetail({ club }: ClubDetailProps) {
           <span
             className={`h-fit rounded-full px-4 py-1.5 text-sm font-medium ${bgSoft} ${textColor}`}
           >
-            {club.category}
+            {getCategoryLabel(club.category, language)}
           </span>
         </div>
 

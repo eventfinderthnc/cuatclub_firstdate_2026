@@ -1,8 +1,18 @@
+"use client";
+
 import { Rose } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { Bodoni_Moda } from "next/font/google";
+import { useLanguage } from "@/lib/i18n";
+import { translations } from "@/lib/translations";
+
+const bodoniModa = Bodoni_Moda({ subsets: ["latin"] });
 
 export default function Home() {
+  const { language } = useLanguage();
+  const t = translations[language];
+
   return (
     <>
       <div className="pointer-events-none fixed inset-0 -z-10 h-screen w-screen overflow-hidden">
@@ -131,8 +141,10 @@ export default function Home() {
             href="/explore"
             className="group relative inline-flex cursor-pointer items-center gap-2 rounded-full border-2 border-white/80 bg-linear-to-b from-white to-[#ffc9dd] px-10 py-3.5 font-heading text-lg tracking-wide text-primary shadow-[0_4px_24px_rgba(196,60,110,0.4)] transition-transform duration-300 hover:scale-105 active:scale-95"
           >
-            <span className="font-bold drop-shadow-[0_1px_1px_rgba(255,255,255,0.6)]">
-              สำรวจชมรม
+            <span
+              className={`${language === "en" ? bodoniModa.className : ""} font-bold drop-shadow-[0_1px_1px_rgba(255,255,255,0.6)]`}
+            >
+              {t.cta.explore}
             </span>
             <Rose size={20} />
             <span

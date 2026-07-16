@@ -1,6 +1,8 @@
 "use client";
 
 import { CATEGORIES } from "@/lib/categories";
+import { useLanguage } from "@/lib/i18n";
+import { getCategoryLabel } from "@/lib/translations";
 
 type CategoryFilterProps = {
   selected: string[];
@@ -8,10 +10,13 @@ type CategoryFilterProps = {
 };
 
 export default function CategoryFilter({ selected, onToggle }: CategoryFilterProps) {
+  const { language } = useLanguage();
+
   return (
     <div className="grid grid-cols-4 gap-x-2 gap-y-4 md:grid-cols-8">
       {CATEGORIES.map(({ label, icon: Icon, textColor, bgSoft, bgSolid }) => {
         const isSelected = selected.includes(label);
+        const displayLabel = getCategoryLabel(label, language);
 
         return (
           <button
@@ -34,7 +39,7 @@ export default function CategoryFilter({ selected, onToggle }: CategoryFilterPro
                 isSelected ? `${textColor}` : "text-stone"
               }`}
             >
-              {label}
+              {displayLabel}
             </span>
           </button>
         );

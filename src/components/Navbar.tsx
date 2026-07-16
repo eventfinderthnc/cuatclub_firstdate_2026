@@ -3,21 +3,26 @@
 import { useRouter, usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { List, Home, MapPinned } from "lucide-react";
+import { useLanguage } from "@/lib/i18n";
+import { translations } from "@/lib/translations";
 
 const NAV_ITEMS = [
-  { href: "/explore", label: "Explore", icon: List },
-  { href: "/", label: "Home", icon: Home },
-  { href: "/map", label: "Map", icon: MapPinned },
-];
+  { href: "/explore", labelKey: "explore", icon: List },
+  { href: "/", labelKey: "home", icon: Home },
+  { href: "/map", labelKey: "map", icon: MapPinned },
+] as const;
 
 export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
+  const { language } = useLanguage();
+  const t = translations[language].nav;
 
   return (
     <nav className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2">
       <ul className="relative flex items-center gap-2 rounded-full bg-background/30 p-2 shadow-[0_0_24px_var(--color-shadow-black)] backdrop-blur-md">
-        {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+        {NAV_ITEMS.map(({ href, labelKey, icon: Icon }) => {
+          const label = t[labelKey];
           const isActive = pathname === href;
 
           return (

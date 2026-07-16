@@ -1,18 +1,25 @@
+"use client";
+
 import Link from "next/link";
 import ExploreContent from "@/components/ExploreContent";
 import InstagramIcon from "@/components/icon/InstagramIcon";
 import { CLUBS } from "@/lib/clubs";
+import { useLanguage } from "@/lib/i18n";
+import { translations } from "@/lib/translations";
 
 export default function Explore() {
+  const { language } = useLanguage();
+  const t = translations[language].explore;
+
   return (
     <div className="flex w-full flex-col gap-6 px-4 pt-4 pb-28">
       <div className="flex items-center justify-between gap-4 rounded-3xl bg-linear-to-b from-primary to-[#E57DA5] p-6">
         <div>
           <h1 className="font-heading text-2xl font-semibold text-white">
-            สวัสดีน้องใหม่!
+            {t.hello}
           </h1>
           <p className="mt-1 text-white">
-            กลัวพลาดกิจกรรมดีๆ ? ติดตามกิจกรรม จากหลายชมรมในจุฬา
+            {t.subtitle}
           </p>
         </div>
         <Link

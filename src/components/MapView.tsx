@@ -18,6 +18,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { MAP_PINS, type MapPin, type MapPinType } from "@/lib/mapPins";
+import { useLanguage } from "@/lib/i18n";
+import { translations } from "@/lib/translations";
 
 const MAP_WIDTH = 1543;
 const MAP_HEIGHT = 1019;
@@ -50,20 +52,6 @@ const PIN_STYLE: Record<MapPinType, { icon: LucideIcon; className: string }> = {
   workshop: { icon: Hammer, className: "bg-[#C1652E] text-white" },
   organization: { icon: Users, className: "bg-[#5B4B9E] text-white" },
   building: { icon: Building, className: "bg-[#6B7280] text-white" },
-};
-
-const PIN_TYPE_LABEL: Record<MapPinType, string> = {
-  faculty: "คณะ",
-  club: "ชมรม",
-  shop: "ร้านค้า",
-  facility: "สิ่งอำนวยความสะดวก",
-  landmark: "สถานที่สำคัญ",
-  service: "จุดบริการ",
-  parking: "ที่จอดรถ",
-  registration: "จุดลงทะเบียน",
-  workshop: "เวิร์กช็อป",
-  organization: "องค์กร",
-  building: "อาคาร",
 };
 
 type Transform = { scale: number; x: number; y: number };
@@ -103,6 +91,8 @@ function fitScale(viewportW: number, viewportH: number): number {
 
 export default function MapView() {
   const router = useRouter();
+  const { language } = useLanguage();
+  const t = translations[language].map;
   const viewportRef = useRef<HTMLDivElement>(null);
   const [transform, setTransform] = useState<Transform>({ scale: 1, x: 0, y: 0 });
   const [selectedPin, setSelectedPin] = useState<MapPin | null>(null);
@@ -399,7 +389,7 @@ export default function MapView() {
                 </span>
                 <div>
                   <p className="text-xs font-medium text-stone">
-                    {PIN_TYPE_LABEL[selectedPin.type]}
+                    {t.pinType[selectedPin.type]}
                   </p>
                   <h2 className="font-heading text-lg font-semibold text-foreground">
                     {selectedPin.name}
@@ -409,7 +399,7 @@ export default function MapView() {
               <button
                 type="button"
                 onClick={closeSheet}
-                aria-label="ปิด"
+                aria-label={t.close}
                 className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full bg-surface text-foreground"
               >
                 <X size={18} />
@@ -426,7 +416,7 @@ export default function MapView() {
                 onClick={() => router.push(selectedPin.link!)}
                 className="mt-5 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-medium text-white"
               >
-                ดูชมรมทั้งหมด
+                {t.viewAllClubs}
               </button>
             )}
           </div>
