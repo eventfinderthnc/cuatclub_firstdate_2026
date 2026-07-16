@@ -93,8 +93,12 @@ function clampTransform(t: Transform, viewportW: number, viewportH: number): Tra
   return { scale, x, y };
 }
 
+// Slightly under-fit so the map has a small margin instead of touching the
+// viewport edges exactly.
+const FIT_MARGIN_RATIO = 0.9;
+
 function fitScale(viewportW: number, viewportH: number): number {
-  return Math.min(viewportW / STAGE_WIDTH, viewportH / STAGE_HEIGHT);
+  return Math.min(viewportW / STAGE_WIDTH, viewportH / STAGE_HEIGHT) * FIT_MARGIN_RATIO;
 }
 
 export default function MapView() {
