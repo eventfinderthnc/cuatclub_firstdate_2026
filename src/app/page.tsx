@@ -41,7 +41,7 @@ export default function Home() {
             className="h-auto w-[100vw] max-w-[590px]"
           />
         </div>
-     
+
         <div className="absolute bottom-1 -right-30 md:-right-40 z-300">
           <Image
             src="/unlocked_your_fate.png"
