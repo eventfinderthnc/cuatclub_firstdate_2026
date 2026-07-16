@@ -328,7 +328,7 @@ export default function MapView() {
             const subTargets = pin.subPins
               ? pin.subPins.map((sub, index) => ({
                   key: `${pin.id}-${index}`,
-                  pin: { ...pin, x: sub.x, y: sub.y },
+                  pin: { ...pin, ...sub },
                   visible: showSubPins,
                 }))
               : [];
@@ -416,7 +416,7 @@ export default function MapView() {
                 onClick={() => router.push(selectedPin.link!)}
                 className="mt-5 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-medium text-white"
               >
-                {t.viewAllClubs}
+                {selectedPin.linkLabel ?? t.viewAllClubs}
               </button>
             )}
           </div>
