@@ -12,7 +12,7 @@ export default function Header() {
   const [language, setLanguage] = useState<"th" | "en">("th");
 
   return (
-    <header className="w-full flex items-center justify-between bg-background px-4 py-3">
+    <header className="w-full flex items-center justify-between px-4 py-3">
       <Image src="/cuatclub_logo.svg" alt="Cuatclub" width={70} height={35} priority />
       <div className="flex items-center rounded-full bg-surface p-1">
         {LANGUAGES.map(({ code, label }) => {

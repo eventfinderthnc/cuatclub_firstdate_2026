@@ -31,7 +31,7 @@ export default function Navbar() {
                 {isActive && (
                   <motion.span
                     layoutId="navbar-pill"
-                    className="absolute inset-0 rounded-full border border-border bg-primary"
+                    className="absolute inset-0 rounded-full bg-primary"
                     transition={{ duration: 0.25, ease: "easeInOut" }}
                   />
                 )}
