@@ -3,11 +3,13 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, Globe, MapPin, Users, X } from "lucide-react";
+import { ArrowLeft, Building2, Globe, MapPin, Users, X } from "lucide-react";
 import type { Club } from "@/lib/clubs";
 import { getCategory } from "@/lib/categories";
 import InstagramIcon from "@/components/icon/InstagramIcon";
 import FacebookIcon from "@/components/icon/FacebookIcon";
+import TiktokIcon from "@/components/icon/TiktokIcon";
+import LineIcon from "@/components/icon/LineIcon";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/lib/i18n";
 import { getCategoryLabel } from "@/lib/translations";
@@ -46,10 +48,11 @@ export default function ClubDetail({ club }: ClubDetailProps) {
     (club.social.website ||
       club.social.instagram ||
       club.social.facebook ||
-      club.social.line);
+      club.social.tiktok ||
+      club.social.lineOA);
 
   return (
-    <div className="flex w-full flex-col gap-4 p-4 min-h-dvh">
+    <div className="flex w-full flex-col gap-4 p-4 pb-28 min-h-dvh">
       <div
         onClick={() => router.back()}
         className="flex items-center gap-1 w-full h-fit text-stone cursor-pointer"
@@ -84,6 +87,10 @@ export default function ClubDetail({ club }: ClubDetailProps) {
           <h1 className="font-heading text-2xl font-semibold text-foreground">
             {club.name}
           </h1>
+          <div className="mt-2 flex items-center gap-2 text-stone">
+            <Building2 size={16} />
+            <span className="text-sm">{club.organization}</span>
+          </div>
           <div className="mt-2 flex items-center gap-2 text-stone">
             <MapPin size={16} />
             <span className="text-sm">{club.location}</span>
@@ -156,13 +163,24 @@ export default function ClubDetail({ club }: ClubDetailProps) {
                   Facebook
                 </Link>
               )}
-              {club.social?.line && (
+              {club.social?.tiktok && (
                 <Link
-                  href={club.social.line}
+                  href={club.social.tiktok}
                   target="_blank"
                   className="flex items-center gap-2 rounded-full bg-surface px-4 py-2.5 text-sm font-medium text-foreground"
                 >
-                  Line
+                  <TiktokIcon size={18} className="text-primary" />
+                  TikTok
+                </Link>
+              )}
+              {club.social?.lineOA && (
+                <Link
+                  href={club.social.lineOA}
+                  target="_blank"
+                  className="flex items-center gap-2 rounded-full bg-surface px-4 py-2.5 text-sm font-medium text-foreground"
+                >
+                  <LineIcon size={18} className="text-primary" />
+                  LINE OA
                 </Link>
               )}
             </div>

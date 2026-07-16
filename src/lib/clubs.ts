@@ -1,14 +1,18 @@
+import clubsData from "@/data/clubs_mock.json";
+
 export type ClubSocial = {
   website?: string;
   instagram?: string;
   facebook?: string;
-  line?: string;
+  tiktok?: string;
+  lineOA?: string;
 };
 
 export type Club = {
   id: number;
   name: string;
   category: string;
+  organization: string;
   description: string;
   about: string;
   location: string;
@@ -17,166 +21,7 @@ export type Club = {
   social?: ClubSocial;
 };
 
-export const CLUBS: Club[] = [
-  {
-    id: 1,
-    name: "Thinc.",
-    category: "วิชาการ",
-    description: "Thinc. is a student-run community aiming to make impact to society.",
-    about:
-      "Thinc. ก่อตั้งขึ้นเพื่อรวมกลุ่มนักศึกษาที่อยากใช้ความรู้ด้านวิศวกรรมและนวัตกรรมมาสร้างผลกระทบเชิงบวกให้สังคม ในแต่ละปีชมรมจัด workshop ด้าน design thinking, ประกวดไอเดียแก้ปัญหาสังคม และร่วมมือกับองค์กรภายนอกทำโปรเจกต์จริง",
-    location: "Student Union, Room 302",
-    coverImages: [
-      "https://picsum.photos/seed/thinc-1/400/400",
-      "https://picsum.photos/seed/thinc-2/400/400",
-      "https://picsum.photos/seed/thinc-3/400/400",
-      "https://picsum.photos/seed/thinc-4/400/400",
-      "https://picsum.photos/seed/thinc-5/400/400",
-    ],
-    social: {
-      website: "https://thinc.chula.ac.th",
-      instagram: "https://instagram.com/thinc.chula",
-    },
-  },
-  {
-    id: 2,
-    name: "Chula Music Club",
-    category: "ศิลปะ & ดนตรี",
-    description: "A community for students who love music, performance, and creativity.",
-    about:
-      "ชมรมดนตรีจุฬาฯ เปิดพื้นที่ให้นักศึกษาทุกคณะที่รักเสียงดนตรีได้มาเล่น ซ้อม และแสดงร่วมกัน กิจกรรมหลักในแต่ละปีคือคอนเสิร์ตประจำปี เวิร์กช็อปดนตรีสำหรับผู้เริ่มต้น และการแสดงในงานกิจกรรมของมหาวิทยาลัย",
-    location: "Student Union, Room 210",
-    social: {
-      instagram: "https://instagram.com/chulamusicclub",
-      facebook: "https://facebook.com/chulamusicclub",
-    },
-  },
-  {
-    id: 3,
-    name: "Debate Society",
-    category: "วิชาการ",
-    description: "Sharpen your critical thinking and public speaking through debate.",
-    about:
-      "Debate Society ตั้งขึ้นเพื่อฝึกฝนทักษะการคิดวิเคราะห์และการพูดในที่สาธารณะให้กับนักศึกษา กิจกรรมหลักคือการฝึกซ้อมโต้วาทีทุกสัปดาห์ และส่งทีมแข่งขันโต้วาทีระดับประเทศและนานาชาติ",
-    location: "Building 4, Room 105",
-    social: {
-      facebook: "https://facebook.com/chuladebate",
-    },
-  },
-  {
-    id: 4,
-    name: "Chula Runners",
-    category: "กีฬา",
-    description: "Weekly running club for students who want to stay fit and make friends.",
-    about:
-      "Chula Runners ก่อตั้งขึ้นเพื่อส่งเสริมสุขภาพและสร้างสังคมของคนรักการวิ่งในรั้วจุฬาฯ ทุกปีชมรมจัดกิจกรรมวิ่งประจำสัปดาห์ เทรนนิ่งเตรียมงานวิ่งมินิมาราธอน และร่วมลงแข่งขันงานวิ่งระดับมหาวิทยาลัย",
-    location: "Sports Complex, Track Field",
-    social: {
-      instagram: "https://instagram.com/chularunners",
-    },
-  },
-  {
-    id: 5,
-    name: "Football Club",
-    category: "กีฬา",
-    description: "Join our football team for training sessions and friendly matches.",
-    about:
-      "ชมรมฟุตบอลจุฬาฯ เปิดรับนักศึกษาทุกระดับฝีเท้าที่รักกีฬาฟุตบอล กิจกรรมหลักคือการฝึกซ้อมทุกสัปดาห์ การแข่งขันกระชับมิตรกับสถาบันอื่น และส่งทีมแข่งฟุตบอลประเพณีจุฬาฯ-ธรรมศาสตร์",
-    location: "Sports Complex, Field 2",
-  },
-  {
-    id: 6,
-    name: "Chula Coding Club",
-    category: "เทคโนโลยี",
-    description: "Learn to code, build projects, and join hackathons together.",
-    about:
-      "Chula Coding Club ตั้งขึ้นเพื่อสร้างชุมชนคนรักการเขียนโค้ด ไม่ว่าจะเริ่มจากศูนย์หรือมีพื้นฐานอยู่แล้ว กิจกรรมหลักในแต่ละปีคือ workshop เขียนโปรแกรม การจัด hackathon ภายในชมรม และการร่วมทีมแข่งขันเขียนโปรแกรมระดับประเทศ",
-    location: "Engineering Building, Room 401",
-    social: {
-      website: "https://chulacoding.dev",
-      instagram: "https://instagram.com/chulacoding",
-    },
-  },
-  {
-    id: 7,
-    name: "Robotics Society",
-    category: "เทคโนโลยี",
-    description: "Design and build robots for national and international competitions.",
-    about:
-      "Robotics Society รวมกลุ่มนักศึกษาที่สนใจด้านหุ่นยนต์และระบบอัตโนมัติ กิจกรรมหลักคือการออกแบบและสร้างหุ่นยนต์เพื่อส่งแข่งขันในรายการระดับชาติและนานาชาติ พร้อมจัดอบรมพื้นฐานหุ่นยนต์ให้รุ่นน้องทุกปี",
-    location: "Engineering Building, Lab 3",
-    social: {
-      facebook: "https://facebook.com/chularobotics",
-    },
-  },
-  {
-    id: 8,
-    name: "Volunteer Spirit",
-    category: "สังคม & จิตอาสา",
-    description: "Organizing volunteer camps and community outreach activities.",
-    about:
-      "Volunteer Spirit ก่อตั้งขึ้นเพื่อส่งต่อโอกาสและความช่วยเหลือสู่ชุมชนที่ขาดแคลน ทุกปีชมรมจัดค่ายอาสาพัฒนาชนบท กิจกรรมบริจาคสิ่งของ และโครงการสอนหนังสือให้เด็กในพื้นที่ห่างไกล",
-    location: "Student Union, Room 105",
-    social: {
-      instagram: "https://instagram.com/volunteerspirit.chula",
-    },
-  },
-  {
-    id: 9,
-    name: "Big Brother Big Sister",
-    category: "สังคม & จิตอาสา",
-    description: "Mentoring freshmen and helping them adjust to university life.",
-    about:
-      "Big Brother Big Sister ตั้งขึ้นเพื่อดูแลน้องปีหนึ่งให้ปรับตัวเข้ากับชีวิตมหาวิทยาลัยได้อย่างราบรื่น กิจกรรมหลักคือระบบพี่เลี้ยงรายบุคคล กิจกรรมกลุ่มสัมพันธ์ และให้คำปรึกษาด้านการเรียนตลอดปีการศึกษา",
-    location: "Student Union, Room 108",
-  },
-  {
-    id: 10,
-    name: "Green Chula",
-    category: "สิ่งแวดล้อม",
-    description: "Promoting sustainability and eco-friendly practices on campus.",
-    about:
-      "Green Chula ก่อตั้งขึ้นเพื่อผลักดันแนวคิดความยั่งยืนภายในรั้วมหาวิทยาลัย กิจกรรมหลักในแต่ละปีคือโครงการคัดแยกขยะในมหาวิทยาลัย การปลูกต้นไม้ และการรณรงค์ลดการใช้พลาสติกแบบใช้ครั้งเดียวทิ้ง",
-    location: "Building 6, Room 201",
-    social: {
-      instagram: "https://instagram.com/greenchula",
-    },
-  },
-  {
-    id: 11,
-    name: "Young Entrepreneurs",
-    category: "ธุรกิจ",
-    description: "A community for students who want to start their own business.",
-    about:
-      "Young Entrepreneurs ตั้งขึ้นเพื่อสนับสนุนนักศึกษาที่อยากเริ่มต้นธุรกิจของตัวเอง กิจกรรมหลักคือ pitching competition ประจำปี เวิร์กช็อปจากผู้ประกอบการจริง และโครงการจับคู่นักศึกษากับ mentor ในวงการสตาร์ทอัพ",
-    location: "Business Building, Room 302",
-    social: {
-      website: "https://youngentrepreneurs.chula.ac.th",
-      facebook: "https://facebook.com/youngentrepreneurschula",
-    },
-  },
-  {
-    id: 12,
-    name: "Investment Club",
-    category: "ธุรกิจ",
-    description: "Learn about stocks, funds, and personal finance from real practitioners.",
-    about:
-      "Investment Club ก่อตั้งขึ้นเพื่อปูพื้นฐานความรู้ด้านการเงินและการลงทุนให้นักศึกษา กิจกรรมหลักคือสัมมนาจากนักลงทุนตัวจริง การจำลองพอร์ตลงทุน และคลาสเรียนพื้นฐานหุ้นและกองทุนทุกภาคการศึกษา",
-    location: "Business Building, Room 305",
-  },
-  {
-    id: 13,
-    name: "Photography Club",
-    category: "ไลฟ์สไตล์",
-    description: "Explore photography techniques and join photo walks around campus.",
-    about:
-      "Photography Club รวมกลุ่มคนรักการถ่ายภาพทุกระดับฝีมือ กิจกรรมหลักในแต่ละปีคือทริป photo walk รอบมหาวิทยาลัยและต่างจังหวัด เวิร์กช็อปเทคนิคถ่ายภาพ และนิทรรศการภาพถ่ายประจำปีของสมาชิกชมรม",
-    location: "Student Union, Room 210",
-    social: {
-      instagram: "https://instagram.com/chulaphotography",
-    },
-  },
-];
+export const CLUBS: Club[] = clubsData as Club[];
 
 export function getClubById(id: number): Club | undefined {
   return CLUBS.find((club) => club.id === id);
