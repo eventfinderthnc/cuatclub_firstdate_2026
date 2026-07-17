@@ -1,3 +1,5 @@
+import { CLUBS } from "@/lib/clubs";
+
 export type MapPinType =
   | "faculty"
   | "club"
@@ -21,6 +23,8 @@ export type MapPin = {
   link?: string;
   // Custom CTA button label for `link`; falls back to a generic label if omitted.
   linkLabel?: string;
+  // Club logo shown in the detail sheet instead of the generic type icon.
+  logoSrc?: string;
   // Individual booth/rectangle positions inside this zone, revealed in place
   // of the single zone pin once the user zooms in close enough. Each can
   // carry its own name/description/link/linkLabel that overrides the zone's;
@@ -32,8 +36,103 @@ export type MapPin = {
     description?: string;
     link?: string;
     linkLabel?: string;
+    // Booth code (e.g. "A1"), shown on the map marker instead of the zone icon.
+    label?: string;
+    // Club logo shown in the detail sheet instead of the generic type icon.
+    logoSrc?: string;
   }[];
 };
+
+type BoothCoord = { x: number; y: number; label: string };
+
+// Builds a booth subPin from club.ts data by matching `Club.location` against
+// the booth code (e.g. "A1"). Booths with no matching club get mock content.
+function buildBoothSubPin({ x, y, label }: BoothCoord, linkLabel: string) {
+  const club = CLUBS.find((c) => c.location === label);
+
+  if (club) {
+    return {
+      x,
+      y,
+      name: club.name.split("|")[0].trim(),
+      description: club.description,
+      link: `/explore/${club.id}`,
+      linkLabel,
+      label,
+      logoSrc: club.logoSrc,
+    };
+  }
+
+  return {
+    x,
+    y,
+    name: `บูธ ${label}`,
+    description: "ข้อมูลชมรมนี้จะอัปเดตเร็วๆ นี้",
+    label,
+  };
+}
+
+// Club zone (id 4): 4 columns A–D, 8 booths each, top to bottom.
+const CLUB_BOOTH_COORDS: BoothCoord[] = [
+  { x: 28.5, y: 64.8, label: "A1" },
+  { x: 28.5, y: 66.6, label: "A2" },
+  { x: 28.5, y: 68.2, label: "A3" },
+  { x: 28.5, y: 69.8, label: "A4" },
+  { x: 28.5, y: 74.1, label: "A5" },
+  { x: 28.5, y: 75.5, label: "A6" },
+  { x: 28.5, y: 77.2, label: "A7" },
+  { x: 28.5, y: 79.2, label: "A8" },
+  { x: 32.9, y: 64.8, label: "B1" },
+  { x: 32.9, y: 66.6, label: "B2" },
+  { x: 32.9, y: 68.2, label: "B3" },
+  { x: 32.9, y: 69.8, label: "B4" },
+  { x: 32.9, y: 74.1, label: "B5" },
+  { x: 32.9, y: 75.5, label: "B6" },
+  { x: 32.9, y: 77.2, label: "B7" },
+  { x: 32.9, y: 79.2, label: "B8" },
+  { x: 34.3, y: 64.8, label: "C1" },
+  { x: 34.3, y: 66.6, label: "C2" },
+  { x: 34.3, y: 68.2, label: "C3" },
+  { x: 34.3, y: 69.8, label: "C4" },
+  { x: 34.3, y: 74.1, label: "C5" },
+  { x: 34.3, y: 75.5, label: "C6" },
+  { x: 34.3, y: 77.2, label: "C7" },
+  { x: 34.3, y: 79.2, label: "C8" },
+  { x: 39.0, y: 64.8, label: "D1" },
+  { x: 39.0, y: 66.6, label: "D2" },
+  { x: 39.0, y: 68.2, label: "D3" },
+  { x: 39.0, y: 69.8, label: "D4" },
+  { x: 39.0, y: 74.1, label: "D5" },
+  { x: 39.0, y: 75.5, label: "D6" },
+  { x: 39.0, y: 77.2, label: "D7" },
+  { x: 39.0, y: 79.2, label: "D8" },
+];
+
+// Organization zone (id 10): column E, 9 booths, top to bottom.
+const ORG_BOOTH_COORDS_E: BoothCoord[] = [
+  { x: 66.1, y: 65.3, label: "E1" },
+  { x: 66.1, y: 68.0, label: "E2" },
+  { x: 66.1, y: 70.0, label: "E3" },
+  { x: 66.1, y: 72.6, label: "E4" },
+  { x: 66.1, y: 74.6, label: "E5" },
+  { x: 66.1, y: 77.0, label: "E6" },
+  { x: 66.1, y: 79.0, label: "E7" },
+  { x: 66.1, y: 81.5, label: "E8" },
+  { x: 66.1, y: 83.9, label: "E9" },
+];
+
+// Organization zone (id 11): row F, 9 booths, top to bottom.
+const ORG_BOOTH_COORDS_F: BoothCoord[] = [
+  { x: 59.9, y: 89.9, label: "F1" },
+  { x: 58.5, y: 89.9, label: "F2" },
+  { x: 57.0, y: 89.9, label: "F3" },
+  { x: 55.8, y: 89.9, label: "F4" },
+  { x: 54.2, y: 89.9, label: "F5" },
+  { x: 53.2, y: 89.9, label: "F6" },
+  { x: 51.7, y: 89.9, label: "F7" },
+  { x: 50.5, y: 89.9, label: "F8" },
+  { x: 49.0, y: 89.9, label: "F9" },
+];
 
 export const MAP_PINS: MapPin[] = [
   {
@@ -42,26 +141,8 @@ export const MAP_PINS: MapPin[] = [
     type: "faculty",
     description:
       "โซนบูธคณะต่างๆ ได้แก่ นิติศาสตร์ เศรษฐศาสตร์ วิทยาศาสตร์การกีฬา ทันตแพทยศาสตร์ สัตวแพทยศาสตร์ รัฐศาสตร์ สหเวชศาสตร์ และวิทยาศาสตร์",
-    x: 30,
-    y: 30,
-    subPins: [
-      { x: 24.8, y: 24.5 },
-      { x: 27.3, y: 24.5 },
-      { x: 33.1, y: 24.5 },
-      { x: 35.6, y: 24.5 },
-      { x: 41.9, y: 24.5 },
-      { x: 44.5, y: 24.5 },
-      { x: 26.2, y: 34.9 },
-      { x: 32.2, y: 34.9 },
-      { x: 37.3, y: 34.9 },
-      { x: 44.5, y: 34.9 },
-      { x: 24.8, y: 44.4 },
-      { x: 27.3, y: 44.4 },
-      { x: 33.1, y: 44.4 },
-      { x: 35.6, y: 44.4 },
-      { x: 41.9, y: 44.4 },
-      { x: 44.5, y: 44.4 },
-    ],
+    x: 33,
+    y: 35,
   },
   {
     id: 3,
@@ -80,24 +161,7 @@ export const MAP_PINS: MapPin[] = [
     x: 32,
     y: 72,
     link: "/explore",
-    subPins: [
-      { x: 28.8, y: 64.8, name: "Thinc.", description: "Thinc. is a student-run community aiming to make impact to society.", link: "/explore/1", linkLabel: "ดูรายละเอียดชมรม" },
-      { x: 33.5, y: 64.8, name: "Chula Music Club", description: "A community for students who love music, performance, and creativity.", link: "/explore/2", linkLabel: "ดูรายละเอียดชมรม" },
-      { x: 35.0, y: 64.8, name: "Debate Society", description: "Sharpen your critical thinking and public speaking through debate.", link: "/explore/3", linkLabel: "ดูรายละเอียดชมรม" },
-      { x: 39.6, y: 64.8, name: "Chula Runners", description: "Weekly running club for students who want to stay fit and make friends.", link: "/explore/4", linkLabel: "ดูรายละเอียดชมรม" },
-      { x: 28.8, y: 68.9, name: "Football Club", description: "Join our football team for training sessions and friendly matches.", link: "/explore/5", linkLabel: "ดูรายละเอียดชมรม" },
-      { x: 33.5, y: 68.9, name: "Chula Coding Club", description: "Learn to code, build projects, and join hackathons together.", link: "/explore/6", linkLabel: "ดูรายละเอียดชมรม" },
-      { x: 35.0, y: 68.9, name: "Robotics Society", description: "Design and build robots for national and international competitions.", link: "/explore/7", linkLabel: "ดูรายละเอียดชมรม" },
-      { x: 39.6, y: 68.9, name: "Volunteer Spirit", description: "Organizing volunteer camps and community outreach activities.", link: "/explore/8", linkLabel: "ดูรายละเอียดชมรม" },
-      { x: 28.8, y: 74.1, name: "Big Brother Big Sister", description: "Mentoring freshmen and helping them adjust to university life.", link: "/explore/9", linkLabel: "ดูรายละเอียดชมรม" },
-      { x: 33.5, y: 74.1, name: "Green Chula", description: "Promoting sustainability and eco-friendly practices on campus.", link: "/explore/10", linkLabel: "ดูรายละเอียดชมรม" },
-      { x: 35.0, y: 74.1, name: "Young Entrepreneurs", description: "A community for students who want to start their own business.", link: "/explore/11", linkLabel: "ดูรายละเอียดชมรม" },
-      { x: 39.6, y: 74.1, name: "Investment Club", description: "Learn about stocks, funds, and personal finance from real practitioners.", link: "/explore/12", linkLabel: "ดูรายละเอียดชมรม" },
-      { x: 28.8, y: 78.2, name: "Photography Club", description: "Explore photography techniques and join photo walks around campus.", link: "/explore/13", linkLabel: "ดูรายละเอียดชมรม" },
-      { x: 33.5, y: 78.2, name: "Thinc.", description: "Thinc. is a student-run community aiming to make impact to society.", link: "/explore/1", linkLabel: "ดูรายละเอียดชมรม" },
-      { x: 35.0, y: 78.2, name: "Chula Music Club", description: "A community for students who love music, performance, and creativity.", link: "/explore/2", linkLabel: "ดูรายละเอียดชมรม" },
-      { x: 39.6, y: 78.2, name: "Debate Society", description: "Sharpen your critical thinking and public speaking through debate.", link: "/explore/3", linkLabel: "ดูรายละเอียดชมรม" },
-    ],
+    subPins: CLUB_BOOTH_COORDS.map((coord) => buildBoothSubPin(coord, "ดูรายละเอียดชมรม")),
   },
   {
     id: 5,
@@ -146,19 +210,7 @@ export const MAP_PINS: MapPin[] = [
     description: "โซนบูธองค์กรกิจกรรมนิสิต บริเวณใกล้พระบรมราชานุสาวรีย์",
     x: 64,
     y: 73,
-    subPins: [
-      { x: 66.6, y: 65.3, name: "Thinc.", description: "Thinc. is a student-run community aiming to make impact to society.", link: "/explore/1", linkLabel: "ดูรายละเอียด" },
-      { x: 66.6, y: 67.2, name: "Chula Music Club", description: "A community for students who love music, performance, and creativity.", link: "/explore/2", linkLabel: "ดูรายละเอียด" },
-      { x: 66.6, y: 69.2, name: "Debate Society", description: "Sharpen your critical thinking and public speaking through debate.", link: "/explore/3", linkLabel: "ดูรายละเอียด" },
-      { x: 66.6, y: 71.1, name: "Chula Runners", description: "Weekly running club for students who want to stay fit and make friends.", link: "/explore/4", linkLabel: "ดูรายละเอียด" },
-      { x: 66.6, y: 73.1, name: "Football Club", description: "Join our football team for training sessions and friendly matches.", link: "/explore/5", linkLabel: "ดูรายละเอียด" },
-      { x: 66.6, y: 75.1, name: "Chula Coding Club", description: "Learn to code, build projects, and join hackathons together.", link: "/explore/6", linkLabel: "ดูรายละเอียด" },
-      { x: 66.6, y: 77.0, name: "Robotics Society", description: "Design and build robots for national and international competitions.", link: "/explore/7", linkLabel: "ดูรายละเอียด" },
-      { x: 66.6, y: 79.0, name: "Volunteer Spirit", description: "Organizing volunteer camps and community outreach activities.", link: "/explore/8", linkLabel: "ดูรายละเอียด" },
-      { x: 66.6, y: 81.0, name: "Big Brother Big Sister", description: "Mentoring freshmen and helping them adjust to university life.", link: "/explore/9", linkLabel: "ดูรายละเอียด" },
-      { x: 66.6, y: 82.9, name: "Green Chula", description: "Promoting sustainability and eco-friendly practices on campus.", link: "/explore/10", linkLabel: "ดูรายละเอียด" },
-      { x: 66.6, y: 84.9, name: "Young Entrepreneurs", description: "A community for students who want to start their own business.", link: "/explore/11", linkLabel: "ดูรายละเอียด" },
-    ],
+    subPins: ORG_BOOTH_COORDS_E.map((coord) => buildBoothSubPin(coord, "ดูรายละเอียด")),
   },
   {
     id: 11,
@@ -167,17 +219,7 @@ export const MAP_PINS: MapPin[] = [
     description: "โซนบูธองค์กรต่างๆภายในงาน",
     x: 50,
     y: 89,
-    subPins: [
-      { x: 52.0, y: 89.9, name: "Thinc.", description: "Thinc. is a student-run community aiming to make impact to society.", link: "/explore/1", linkLabel: "ดูรายละเอียด" },
-      { x: 53.1, y: 89.9, name: "Chula Music Club", description: "A community for students who love music, performance, and creativity.", link: "/explore/2", linkLabel: "ดูรายละเอียด" },
-      { x: 54.2, y: 89.9, name: "Debate Society", description: "Sharpen your critical thinking and public speaking through debate.", link: "/explore/3", linkLabel: "ดูรายละเอียด" },
-      { x: 55.3, y: 89.9, name: "Chula Runners", description: "Weekly running club for students who want to stay fit and make friends.", link: "/explore/4", linkLabel: "ดูรายละเอียด" },
-      { x: 56.4, y: 89.9, name: "Football Club", description: "Join our football team for training sessions and friendly matches.", link: "/explore/5", linkLabel: "ดูรายละเอียด" },
-      { x: 57.5, y: 89.9, name: "Chula Coding Club", description: "Learn to code, build projects, and join hackathons together.", link: "/explore/6", linkLabel: "ดูรายละเอียด" },
-      { x: 58.5, y: 89.9, name: "Robotics Society", description: "Design and build robots for national and international competitions.", link: "/explore/7", linkLabel: "ดูรายละเอียด" },
-      { x: 59.6, y: 89.9, name: "Volunteer Spirit", description: "Organizing volunteer camps and community outreach activities.", link: "/explore/8", linkLabel: "ดูรายละเอียด" },
-      { x: 60.7, y: 89.9, name: "Big Brother Big Sister", description: "Mentoring freshmen and helping them adjust to university life.", link: "/explore/9", linkLabel: "ดูรายละเอียด" },
-    ],
+    subPins: ORG_BOOTH_COORDS_F.map((coord) => buildBoothSubPin(coord, "ดูรายละเอียด")),
   },
   {
     id: 12,

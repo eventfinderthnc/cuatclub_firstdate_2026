@@ -357,7 +357,11 @@ export default function MapView() {
                     <span
                       className={`flex h-9 w-9 items-center justify-center rounded-full border-2 border-white ${style.className}`}
                     >
-                      <Icon size={18} strokeWidth={2.25} />
+                      {target.label ? (
+                        <span className="text-xs font-bold">{target.label}</span>
+                      ) : (
+                        <Icon size={18} strokeWidth={2.25} />
+                      )}
                     </span>
                   </span>
                 </button>
@@ -382,11 +386,23 @@ export default function MapView() {
           >
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-center gap-3">
-                <span
-                  className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${pinStyle.className}`}
-                >
-                  <PinIcon size={20} />
-                </span>
+                {selectedPin.logoSrc ? (
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white">
+                    <Image
+                      src={selectedPin.logoSrc}
+                      alt={selectedPin.name}
+                      width={44}
+                      height={44}
+                      className="object-cover"
+                    />
+                  </span>
+                ) : (
+                  <span
+                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${pinStyle.className}`}
+                  >
+                    <PinIcon size={20} />
+                  </span>
+                )}
                 <div>
                   <p className="text-xs font-medium text-stone">
                     {t.pinType[selectedPin.type]}
