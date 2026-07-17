@@ -35,6 +35,8 @@ const PAN_SLACK = 28;
 // How far past the fit-to-screen scale the user must zoom in before a zone
 // pin (ชมรม / องค์กร / อาคารคณะ) splits into one pin per booth.
 const SUB_PIN_REVEAL_RATIO = 2.2;
+// Constant on-screen size (px) for pin markers, regardless of zoom.
+const MARKER_SIZE = 36;
 
 function rotatePinPercent(pin: { x: number; y: number }) {
   return { x: pin.y, y: 100 - pin.x };
@@ -338,33 +340,54 @@ export default function MapView() {
 
             return targets.map(({ key, pin: target, visible }) => {
               const { x, y } = rotatePinPercent(target);
+              // The button's width/height are set in un-scaled stage px so that,
+              // once the ancestor stage's scale(transform.scale) is applied, it
+              // renders (and hit-tests) at a constant MARKER_SIZE on screen —
+              // sizing this way keeps the clickable area exactly matching what's
+              // drawn, unlike countering the zoom with a `transform: scale()` on
+              // the button itself (browsers don't reliably shrink the hit box to
+              // match a transformed element's rendered size in that setup).
+              const markerBoxSize = MARKER_SIZE / transform.scale;
+              // Icon/label are drawn in the same un-scaled stage space as the
+              // button, so they need the same counter-scaling — otherwise they'd
+              // render at a fixed CSS size and end up tiny when zoomed out or
+              // oversized when zoomed in, instead of matching the marker's
+              // constant on-screen size.
+              const iconSize = (markerBoxSize * 18) / MARKER_SIZE;
+              const labelFontSize = (markerBoxSize * 12) / MARKER_SIZE;
+              const borderWidth = (markerBoxSize * 2) / MARKER_SIZE;
               return (
-                <button
+                <div
                   key={key}
-                  type="button"
-                  onClick={(e) => handlePinClick(target, e)}
-                  tabIndex={visible ? 0 : -1}
-                  aria-hidden={!visible}
                   className={`absolute -translate-x-1/2 -translate-y-full transition-opacity duration-200 ${
-                    visible ? "cursor-pointer opacity-100" : "pointer-events-none opacity-0"
+                    visible ? "opacity-100" : "pointer-events-none opacity-0"
                   }`}
                   style={{ left: `${x}%`, top: `${y}%` }}
                 >
-                  <span
-                    className="block origin-bottom drop-shadow-[0_2px_4px_rgba(0,0,0,0.35)]"
-                    style={{ transform: `scale(${1 / transform.scale})` }}
+                  <button
+                    type="button"
+                    onClick={(e) => handlePinClick(target, e)}
+                    tabIndex={visible ? 0 : -1}
+                    aria-hidden={!visible}
+                    className={`block drop-shadow-[0_2px_4px_rgba(0,0,0,0.35)] ${
+                      visible ? "cursor-pointer" : "pointer-events-none"
+                    }`}
+                    style={{ width: markerBoxSize, height: markerBoxSize }}
                   >
                     <span
-                      className={`flex h-9 w-9 items-center justify-center rounded-full border-2 border-white ${style.className}`}
+                      className={`flex h-full w-full items-center justify-center rounded-full border-white ${style.className}`}
+                      style={{ borderWidth, borderStyle: "solid" }}
                     >
                       {target.label ? (
-                        <span className="text-xs font-bold">{target.label}</span>
+                        <span className="font-bold" style={{ fontSize: labelFontSize }}>
+                          {target.label}
+                        </span>
                       ) : (
-                        <Icon size={18} strokeWidth={2.25} />
+                        <Icon size={iconSize} strokeWidth={2.25} />
                       )}
                     </span>
-                  </span>
-                </button>
+                  </button>
+                </div>
               );
             });
           })}
