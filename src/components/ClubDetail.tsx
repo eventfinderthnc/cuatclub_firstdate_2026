@@ -21,7 +21,6 @@ type ClubDetailProps = {
 export default function ClubDetail({ club }: ClubDetailProps) {
   const router = useRouter();
   const { language } = useLanguage();
-  const { textColor, bgSoft } = getCategory(club.category);
   const gallery = club.coverImages ?? [];
   const [renderedImage, setRenderedImage] = useState<string | null>(null);
   const [previewVisible, setPreviewVisible] = useState(false);
@@ -63,7 +62,7 @@ export default function ClubDetail({ club }: ClubDetailProps) {
 
       <div className="flex flex-col gap-6">
         <div className="flex justify-between">
-          <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-4 border-background bg-primary/30">
+          <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-4 border-background bg-white">
             {club.logoSrc ? (
               <Image
                 src={club.logoSrc}
@@ -76,11 +75,19 @@ export default function ClubDetail({ club }: ClubDetailProps) {
               <Users size={36} className="text-primary" />
             )}
           </div>
-          <span
-            className={`h-fit rounded-full px-4 py-1.5 text-sm font-medium ${bgSoft} ${textColor}`}
-          >
-            {getCategoryLabel(club.category, language)}
-          </span>
+          <div className="flex h-fit flex-wrap justify-end gap-1.5">
+            {club.category.map((tag) => {
+              const { textColor, bgSoft } = getCategory(tag);
+              return (
+                <span
+                  key={tag}
+                  className={`rounded-full px-4 py-1.5 text-sm font-medium ${bgSoft} ${textColor}`}
+                >
+                  {getCategoryLabel(tag, language)}
+                </span>
+              );
+            })}
+          </div>
         </div>
 
         <div>
@@ -93,7 +100,7 @@ export default function ClubDetail({ club }: ClubDetailProps) {
           </div>
           <div className="mt-2 flex items-center gap-2 text-stone">
             <MapPin size={16} />
-            <span className="text-sm">{club.location}</span>
+            <span className="text-sm">Booth {club.location}</span>
           </div>
         </div>
 

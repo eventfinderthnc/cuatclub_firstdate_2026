@@ -35,6 +35,7 @@ export const translations = {
       สิ่งแวดล้อม: "สิ่งแวดล้อม",
       ธุรกิจ: "ธุรกิจ",
       ไลฟ์สไตล์: "ไลฟ์สไตล์",
+      อื่นๆ: "อื่นๆ",
     },
   },
   en: {
@@ -71,6 +72,7 @@ export const translations = {
       สิ่งแวดล้อม: "Environment",
       ธุรกิจ: "Business",
       ไลฟ์สไตล์: "Lifestyle",
+      อื่นๆ: "Others",
     },
   },
 } as const;

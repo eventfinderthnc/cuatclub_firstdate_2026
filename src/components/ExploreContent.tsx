@@ -8,7 +8,7 @@ import CategoryFilter from "@/components/CategoryFilter";
 type Club = {
   id: number;
   name: string;
-  category: string;
+  category: string[];
   description: string;
   location: string;
   logoSrc?: string;
@@ -33,11 +33,12 @@ export default function ExploreContent({ clubs }: ExploreContentProps) {
 
     return clubs.filter((club) => {
       const matchesCategory =
-        selectedCategories.length === 0 || selectedCategories.includes(club.category);
+        selectedCategories.length === 0 ||
+        club.category.some((tag) => selectedCategories.includes(tag));
 
       const matchesSearch =
         query === "" ||
-        [club.name, club.category, club.description, club.location].some((field) =>
+        [club.name, ...club.category, club.description, club.location].some((field) =>
           field.toLowerCase().includes(query)
         );
 

@@ -14,7 +14,7 @@ export default function CategoryFilter({ selected, onToggle }: CategoryFilterPro
 
   return (
     <div className="grid grid-cols-4 gap-x-2 gap-y-4 md:grid-cols-8">
-      {CATEGORIES.map(({ label, icon: Icon, textColor, bgSoft, bgSolid }) => {
+      {CATEGORIES.filter(({ label }) => label !== "อื่นๆ").map(({ label, icon: Icon, textColor, bgSoft, bgSolid }) => {
         const isSelected = selected.includes(label);
         const displayLabel = getCategoryLabel(label, language);
 

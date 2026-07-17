@@ -7,6 +7,7 @@ import {
   Leaf,
   Briefcase,
   Camera,
+  MoreHorizontal,
   type LucideIcon,
 } from "lucide-react";
 
@@ -27,6 +28,7 @@ export const CATEGORIES: Category[] = [
   { label: "สิ่งแวดล้อม", icon: Leaf, textColor: "text-green-500", bgSoft: "bg-green-500/10", bgSolid: "bg-green-500" },
   { label: "ธุรกิจ", icon: Briefcase, textColor: "text-amber-500", bgSoft: "bg-amber-500/10", bgSolid: "bg-amber-500" },
   { label: "ไลฟ์สไตล์", icon: Camera, textColor: "text-teal-500", bgSoft: "bg-teal-500/10", bgSolid: "bg-teal-500" },
+  { label: "อื่นๆ", icon: MoreHorizontal, textColor: "text-stone-500", bgSoft: "bg-stone-500/10", bgSolid: "bg-stone-500" },
 ];
 
 export function getCategory(label: string): Category {

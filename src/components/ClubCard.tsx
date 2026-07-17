@@ -10,7 +10,7 @@ import { getCategoryLabel } from "@/lib/translations";
 type ClubCardProps = {
   id: number;
   name: string;
-  category: string;
+  category: string[];
   description: string;
   location: string;
   logoSrc?: string;
@@ -26,7 +26,6 @@ export default function ClubCard({
 }: ClubCardProps) {
   const router = useRouter();
   const { language } = useLanguage();
-  const { textColor, bgSoft } = getCategory(category);
 
   return (
     <div
@@ -39,7 +38,7 @@ export default function ClubCard({
       className="w-full cursor-pointer rounded-2xl border border-border bg-background p-5 shadow-[0_0_14px_var(--color-shadow-black)] transition-colors hover:border-primary/40 md:shadow-none"
     >
       <div className="flex items-start justify-between">
-        <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-primary/30">
+        <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-white">
           {logoSrc ? (
             <Image
               src={logoSrc}
@@ -52,9 +51,19 @@ export default function ClubCard({
             <Users size={24} className="text-primary" />
           )}
         </div>
-        <span className={`rounded-full px-4 py-1.5 text-sm font-medium ${bgSoft} ${textColor}`}>
-          {getCategoryLabel(category, language)}
-        </span>
+        <div className="flex flex-wrap justify-end gap-1.5">
+          {category.map((tag) => {
+            const { textColor, bgSoft } = getCategory(tag);
+            return (
+              <span
+                key={tag}
+                className={`rounded-full px-4 py-1.5 text-sm font-medium ${bgSoft} ${textColor}`}
+              >
+                {getCategoryLabel(tag, language)}
+              </span>
+            );
+          })}
+        </div>
       </div>
 
       <h3 className="mt-4 text-xl font-bold text-foreground">{name}</h3>
@@ -62,7 +71,7 @@ export default function ClubCard({
 
       <div className="mt-4 flex items-center gap-2 border-t border-border pt-3 text-stone">
         <MapPin size={16} />
-        <span className="text-sm">{location}</span>
+        <span className="text-sm">Booth {location}</span>
       </div>
 
       <div className="mt-4 flex items-center w-full justify-between text-base font-medium text-primary">

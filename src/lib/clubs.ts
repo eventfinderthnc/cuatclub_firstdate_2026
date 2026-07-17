@@ -11,7 +11,7 @@ export type ClubSocial = {
 export type Club = {
   id: number;
   name: string;
-  category: string;
+  category: string[];
   organization: string;
   description: string;
   about: string;
