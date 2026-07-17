@@ -1,4 +1,4 @@
-import clubsData from "@/data/clubs_mock.json";
+import clubsData from "@/data/clubs.json";
 
 export type ClubSocial = {
   website?: string;
