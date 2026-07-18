@@ -27,7 +27,7 @@ export const translations = {
       searchPlaceholder: "กำลังหาอะไรอยู่?",
     },
     clubCard: {
-      thincCredit: "โปรเจกต์นี้จัดทำโดยชมรม Thinc.",
+      thincCredit: "โปรเจกต์นี้อยู่ภายใต้ชมรม Thinc.",
     },
     categories: {
       วิชาการ: "วิชาการ",
@@ -67,7 +67,7 @@ export const translations = {
       searchPlaceholder: "What are you looking for?",
     },
     clubCard: {
-      thincCredit: "This project is built by Thinc. club",
+      thincCredit: "This project is under Thinc. club",
     },
     categories: {
       วิชาการ: "Academic",
