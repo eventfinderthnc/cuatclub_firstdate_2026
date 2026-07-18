@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Noto_Sans_Thai } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Header from "@/components/Header";
@@ -48,6 +49,7 @@ export default function RootLayout({
             <Navbar />
           </div>
         </LanguageProvider>
+        <Analytics />
       </body>
     </html>
   );
