@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import { ArrowRight, MapPin, Users } from "lucide-react";
 import { getCategory } from "@/lib/categories";
 import { useLanguage } from "@/lib/i18n";
-import { getCategoryLabel } from "@/lib/translations";
+import { getCategoryLabel, translations } from "@/lib/translations";
+
+const THINC_CLUB_ID = 1;
 
 type ClubCardProps = {
   id: number;
@@ -66,7 +68,14 @@ export default function ClubCard({
         </div>
       </div>
 
-      <h3 className="mt-4 text-xl font-bold text-foreground">{name}</h3>
+      <div className="mt-4 flex flex-wrap items-center gap-2">
+        <h3 className="text-xl font-bold text-foreground">{name}</h3>
+        {id === THINC_CLUB_ID && (
+          <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+            {translations[language].clubCard.thincCredit}
+          </span>
+        )}
+      </div>
       <p className="mt-2 text-charcoal">{description}</p>
 
       <div className="mt-4 flex items-center gap-2 border-t border-border pt-3 text-stone">

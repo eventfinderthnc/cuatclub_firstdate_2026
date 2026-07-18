@@ -2,24 +2,26 @@
   {
     "id": 1,
     "logoSrc": "/1/logo.png",
-    "name": "ชมรมศิลปวัฒนธรรมล้านนา จุฬาลงกรณ์มหาวิทยาลัย | Lanna Arts and Cultural Club Chula",
+    "name": "Thinc.",
     "category": [
-      "ศิลปะ & ดนตรี"
+      "ธุรกิจ",
+      "เทคโนโลยี"
     ],
-    "organization": "สังกัดอบจ.",
-    "description": "ชมรมศิลปวัฒนธรรมล้านนา พื้นที่สำหรับคนภาคเหนือ ที่ไม่ใช่คนภาคเหนือก็เข้าร่วมได้",
-    "about": "ชมรมศิลปวัฒนธรรมล้านนา จุฬาลงกรณ์มหาวิทยาลัย เป็นพื้นที่แห่งการเรียนรู้และสืบสานศิลปวัฒนธรรม ประเพณี และภูมิปัญญาของภาคเหนือ โดยมุ่งสร้างความภาคภูมิใจในอัตลักษณ์ล้านนา ควบคู่กับการเปิดโอกาสให้ผู้ที่สนใจจากทุกภูมิภาคได้เข้ามามีส่วนร่วม แลกเปลี่ยนประสบการณ์ และเรียนรู้ร่วมกัน ผ่านกิจกรรมที่หลากหลาย เช่น การแสดงศิลปวัฒนธรรม ดนตรีพื้นเมือง นาฏศิลป์ งานหัตถกรรม อาหาร ประเพณี และโครงการอาสา ชมรมเชื่อว่าศิลปวัฒนธรรมเป็นสะพานเชื่อมผู้คน และความแตกต่างทางภูมิหลังไม่ใช่อุปสรรคในการสร้างมิตรภาพ เราจึงยินดีต้อนรับทั้งนิสิตชาวเหนือและผู้ที่สนใจทุกคน ให้ร่วมเป็นส่วนหนึ่งของการอนุรักษ์ เผยแพร่ และส่งต่อคุณค่าของวัฒนธรรมล้านนา เพื่อให้มรดกอันงดงามนี้คงอยู่และเติบโตไปพร้อมกับสังคมไทยในอนาคต",
-    "location": "C3",
+    "organization": "คณะวิศวกรรมศาสตร์ (Faculty of Engineering)",
+    "description": "Thinc. is a student-run builder community committed to developing hidden talent into people who create real-world impact through software, product, and startup-style execution. We turn ideas into products that matter, taking small steps to make great impacts.",
+    "about": "Thinc is a student builder community at Chula Engineering that has been shipping real software to the market and spinning out startups since 2012. We exist because we believe a lot of students could build something people genuinely use, but they never get the team, the real problem, or the push to start. So we put you in a small team, help you find a real problem with real users, and you build it, test it with those users, and keep fixing it until it works, with alumni around to help. Our club has grown real startups like Viabus and shipped apps like CUpid and CUGetReg that thousands of students actually use, and we also take on paid client work that keeps the club running. You walk out knowing how to turn an idea into something real.",
+    "location": "E4",
     "coverImages": [
-      "/1/image1.png",
-      "/1/image2.png",
-      "/1/image3.png",
-      "/1/image4.png",
-      "/1/image5.png"
+      "/1/image1.PNG",
+      "/1/image2.PNG",
+      "/1/image3.PNG",
+      "/1/image4.PNG",
+      "/1/image5.PNG"
     ],
     "social": {
-      "instagram": "https://instagram.com/lannachula.official",
-      "facebook": "https://www.facebook.com/search/top?q=%E0%B8%8A%E0%B8%A1%E0%B8%A3%E0%B8%A1%E0%B8%A8%E0%B8%B4%E0%B8%A5%E0%B8%9B%E0%B8%A7%E0%B8%B1%E0%B8%92%E0%B8%99%E0%B8%98%E0%B8%A3%E0%B8%A3%E0%B8%A1%E0%B8%A5%E0%B9%89%E0%B8%B2%E0%B8%99%E0%B8%99%E0%B8%B2%20%E0%B8%88%E0%B8%B8%E0%B8%AC%E0%B8%B2%E0%B8%AF"
+      "instagram": "https://instagram.com/thinc.in.th",
+      "facebook": "https://facebook.com/thinc.in.th",
+      "website": "https://thinc.in.th"
     }
   },
   {
@@ -977,26 +979,24 @@
   {
     "id": 47,
     "logoSrc": "/47/logo.png",
-    "name": "Thinc.",
+    "name": "ชมรมศิลปวัฒนธรรมล้านนา จุฬาลงกรณ์มหาวิทยาลัย | Lanna Arts and Cultural Club Chula",
     "category": [
-      "ธุรกิจ",
-      "เทคโนโลยี"
+      "ศิลปะ & ดนตรี"
     ],
-    "organization": "คณะวิศวกรรมศาสตร์ (Faculty of Engineering)",
-    "description": "Thinc. is a student-run builder community committed to developing hidden talent into people who create real-world impact through software, product, and startup-style execution. We turn ideas into products that matter, taking small steps to make great impacts.",
-    "about": "Thinc is a student builder community at Chula Engineering that has been shipping real software to the market and spinning out startups since 2012. We exist because we believe a lot of students could build something people genuinely use, but they never get the team, the real problem, or the push to start. So we put you in a small team, help you find a real problem with real users, and you build it, test it with those users, and keep fixing it until it works, with alumni around to help. Our club has grown real startups like Viabus and shipped apps like CUpid and CUGetReg that thousands of students actually use, and we also take on paid client work that keeps the club running. You walk out knowing how to turn an idea into something real.",
-    "location": "E4",
+    "organization": "สังกัดอบจ.",
+    "description": "ชมรมศิลปวัฒนธรรมล้านนา พื้นที่สำหรับคนภาคเหนือ ที่ไม่ใช่คนภาคเหนือก็เข้าร่วมได้",
+    "about": "ชมรมศิลปวัฒนธรรมล้านนา จุฬาลงกรณ์มหาวิทยาลัย เป็นพื้นที่แห่งการเรียนรู้และสืบสานศิลปวัฒนธรรม ประเพณี และภูมิปัญญาของภาคเหนือ โดยมุ่งสร้างความภาคภูมิใจในอัตลักษณ์ล้านนา ควบคู่กับการเปิดโอกาสให้ผู้ที่สนใจจากทุกภูมิภาคได้เข้ามามีส่วนร่วม แลกเปลี่ยนประสบการณ์ และเรียนรู้ร่วมกัน ผ่านกิจกรรมที่หลากหลาย เช่น การแสดงศิลปวัฒนธรรม ดนตรีพื้นเมือง นาฏศิลป์ งานหัตถกรรม อาหาร ประเพณี และโครงการอาสา ชมรมเชื่อว่าศิลปวัฒนธรรมเป็นสะพานเชื่อมผู้คน และความแตกต่างทางภูมิหลังไม่ใช่อุปสรรคในการสร้างมิตรภาพ เราจึงยินดีต้อนรับทั้งนิสิตชาวเหนือและผู้ที่สนใจทุกคน ให้ร่วมเป็นส่วนหนึ่งของการอนุรักษ์ เผยแพร่ และส่งต่อคุณค่าของวัฒนธรรมล้านนา เพื่อให้มรดกอันงดงามนี้คงอยู่และเติบโตไปพร้อมกับสังคมไทยในอนาคต",
+    "location": "C3",
     "coverImages": [
-      "/47/image1.PNG",
-      "/47/image2.PNG",
-      "/47/image3.PNG",
-      "/47/image4.PNG",
-      "/47/image5.PNG"
+      "/47/image1.png",
+      "/47/image2.png",
+      "/47/image3.png",
+      "/47/image4.png",
+      "/47/image5.png"
     ],
     "social": {
-      "instagram": "https://instagram.com/thinc.in.th",
-      "facebook": "https://facebook.com/thinc.in.th",
-      "website": "https://thinc.in.th"
+      "instagram": "https://instagram.com/lannachula.official",
+      "facebook": "https://www.facebook.com/search/top?q=%E0%B8%8A%E0%B8%A1%E0%B8%A3%E0%B8%A1%E0%B8%A8%E0%B8%B4%E0%B8%A5%E0%B8%9B%E0%B8%A7%E0%B8%B1%E0%B8%92%E0%B8%99%E0%B8%98%E0%B8%A3%E0%B8%A3%E0%B8%A1%E0%B8%A5%E0%B9%89%E0%B8%B2%E0%B8%99%E0%B8%99%E0%B8%B2%20%E0%B8%88%E0%B8%B8%E0%B8%AC%E0%B8%B2%E0%B8%AF"
     }
   }
 ]

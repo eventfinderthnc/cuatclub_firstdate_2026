@@ -26,6 +26,9 @@ export const translations = {
       subtitle: "กลัวพลาดกิจกรรมดีๆ ? ติดตามกิจกรรม จากหลายชมรมในจุฬา",
       searchPlaceholder: "กำลังหาอะไรอยู่?",
     },
+    clubCard: {
+      thincCredit: "โปรเจกต์นี้จัดทำโดยชมรม Thinc.",
+    },
     categories: {
       วิชาการ: "วิชาการ",
       "ศิลปะ & ดนตรี": "ศิลปะ & ดนตรี",
@@ -62,6 +65,9 @@ export const translations = {
       hello: "Hi there, freshies!",
       subtitle: "Don't miss out on great activities — follow clubs across Chula",
       searchPlaceholder: "What are you looking for?",
+    },
+    clubCard: {
+      thincCredit: "This project is built by Thinc. club",
     },
     categories: {
       วิชาการ: "Academic",
