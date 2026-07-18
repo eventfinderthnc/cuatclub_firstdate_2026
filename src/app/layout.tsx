@@ -18,7 +18,7 @@ const notoSansThai = Noto_Sans_Thai({
 });
 
 export const metadata: Metadata = {
-  title: "CuAtClub x CU First Date 2026 | ทุกชมรมในที่เดียว",
+  title: "CUatClub x CU First Date 2026 | ทุกชมรมในที่เดียว",
   description:
     "รวมทุกชมรมและบูธในงาน First Date 2026 พร้อมแผนที่ Interactive ที่ช่วยให้คุณค้นหา สำรวจ และเดินทางภายในงานได้ง่ายกว่าที่เคย",
 };
